@@ -1,9 +1,13 @@
 name: Run Discord Bot with Docker
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'   # toutes les 5 heures
+    - cron: '0 */5 * * *'
+
 
 jobs:
   run-bot:
