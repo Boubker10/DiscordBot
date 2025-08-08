@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "my-discord-bot"
+version = "0.1.0"
+description = "Bot Discord avec DeepSeek"
+authors = ["BoubkerBENNANI <boubker.bennani.pro@gmail.com>"]
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+discord = "*"
+requests = "^2.31.0"
+python-dotenv = "^1.0.0"
+pandas = "^2.0.3"
+pyyaml = "^6.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
