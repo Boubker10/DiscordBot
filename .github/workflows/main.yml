@@ -1,38 +1,39 @@
 name: Run Discord Bot with Docker
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'   # toutes les 5 heures
+    - cron: '0 */5 * * *'
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Build Docker image
-      run: docker build -t discord-bot:latest ./src
+      - name: Create .env file
+        run: |
+          echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
+          echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> .env
+          echo "DEEPSEEK_BASE_URL=${{ secrets.DEEPSEEK_BASE_URL }}" >> .env
+          echo "DEEPSEEK_MODEL=${{ secrets.DEEPSEEK_MODEL }}" >> .env
 
-    - name: Create .env file
-      run: |
-        echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> .env
-        echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> .env
-        echo "DEEPSEEK_BASE_URL=${{ secrets.DEEPSEEK_BASE_URL }}" >> .env
-        echo "DEEPSEEK_MODEL=${{ secrets.DEEPSEEK_MODEL }}" >> .env
+      - name: Build Docker image
+        run: docker build -t discord-bot:latest -f Dockerfile .
 
-    - name: Start container with docker-compose
-      run: |
-        docker-compose -f ./src/docker-compose.yml up -d
+      - name: Start container with docker compose
+        run: docker compose -f ./docker-compose.yml up -d
 
-    - name: Keep job alive while container runs
-      run: sleep 21600  # 6h (max durée job github actions)
+      - name: Keep job alive while container runs
+        run: sleep 21600  # 6 hours max duration of GitHub Actions job
 
-    - name: Tear down container
-      if: always()
-      run: docker-compose -f ./src/docker-compose.yml down
+      - name: Tear down container
+        if: always()
+        run: docker compose -f ./docker-compose.yml down
