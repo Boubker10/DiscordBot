@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "Bot Discord avec DeepSeek"
 authors = ["BoubkerBENNANI <boubker.bennani.pro@gmail.com>"]
 readme = "README.md"
+<<<<<<< HEAD
 package-mode = false
+=======
+>>>>>>> 527d96cd208028a912e9a41439603fa78f7a25b3
 
 [tool.poetry.dependencies]
 python = "^3.11"
