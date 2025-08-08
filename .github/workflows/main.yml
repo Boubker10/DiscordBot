@@ -19,7 +19,8 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build Docker image
-        run: docker build -t discord-bot:latest ./src
+        run: docker build -t discord-bot:latest -f Dockerfile ./src
+        # OU docker build -t discord-bot:latest .  (selon emplacement Dockerfile)
 
       - name: Create .env file
         run: |
@@ -28,12 +29,12 @@ jobs:
           echo "DEEPSEEK_BASE_URL=${{ secrets.DEEPSEEK_BASE_URL }}" >> .env
           echo "DEEPSEEK_MODEL=${{ secrets.DEEPSEEK_MODEL }}" >> .env
 
-      - name: Start container with docker-compose
-        run: docker-compose -f ./docker-compose.yml up -d
+      - name: Start container with docker compose
+        run: docker compose -f ./docker-compose.yml up -d
 
       - name: Keep job alive while container runs
         run: sleep 21600  # 6 hours max duration of GitHub Actions job
 
       - name: Tear down container
         if: always()
-        run: docker-compose -f ./docker-compose.yml down
+        run: docker compose -f ./docker-compose.yml down
