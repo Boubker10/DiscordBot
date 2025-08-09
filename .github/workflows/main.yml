@@ -1,12 +1,9 @@
-name: Run Discord Bot with Docker
+name: Run Discord Bot ON/OFF Cycle
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'
+    - cron: '0 */4 * * *' # Lance toutes les 4 heures
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -14,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -23,7 +22,7 @@ jobs:
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
           echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> .env
           echo "DEEPSEEK_BASE_URL=${{ secrets.DEEPSEEK_BASE_URL }}" >> .env
-          echo "DEEPSEEK_MODEL=${{ secrets.DEEPSEEK_MODEL }}" >> .env
+          echo "DEEPSEEK_MODEL=${{ secrets.DEPPSEEK_MODEL }}" >> .env
 
       - name: Build Docker image
         run: docker build -t discord-bot:latest -f Dockerfile .
@@ -31,8 +30,8 @@ jobs:
       - name: Start container with docker compose
         run: docker compose -f ./docker-compose.yml up -d
 
-      - name: Keep job alive while container runs
-        run: sleep 21600  # 6 hours max duration of GitHub Actions job
+      - name: Keep job alive for 2 hours
+        run: sleep 7200
 
       - name: Tear down container
         if: always()
